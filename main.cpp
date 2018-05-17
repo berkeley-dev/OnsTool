@@ -69,6 +69,31 @@ public:
 		mNetworks.emplace_back(data);
 	}
 
+	void Edit(uint32_t mnc, uint32_t mcc, const std::string &name_1) {
+		auto it = std::find_if(mNetworks.begin(), mNetworks.end(), [&](const spnData &data) {
+			return data.mnc == mnc && data.mcc == mcc;
+		});
+
+		if (it == mNetworks.end()) {
+			return;
+		}
+
+		std::memcpy(&it->name_1, name_1.data(), sizeof(it->name_1));
+	}
+
+	void Edit(uint32_t mnc, uint32_t mcc, const std::string &name_1, const std::string &name_2) {
+		auto it = std::find_if(mNetworks.begin(), mNetworks.end(), [&](const spnData &data) {
+			return data.mnc == mnc && data.mcc == mcc;
+		});
+
+		if (it == mNetworks.end()) {
+			return;
+		}
+
+		std::memcpy(&it->name_1, name_1.data(), sizeof(it->name_1));
+		std::memcpy(&it->name_2, name_2.data(), sizeof(it->name_2));
+	}
+
 	void Remove(uint32_t mnc, uint32_t mcc) {
 		auto it = std::find_if(mNetworks.begin(), mNetworks.end(), [&](const spnData &data) {
 			return data.mnc == mnc && data.mcc == mcc;
@@ -96,6 +121,7 @@ int main(int argc, char *argv[]) {
 		std::cout << "commands:" << std::endl;
 		std::cout << "\tlist" << std::endl;
 		std::cout << "\tadd [mnc] [mcc] [name_1] (name_2)" << std::endl;
+		std::cout << "\tedit [mnc] [mcc] [name_1] (name_2)" << std::endl;
 		std::cout << "\tremove [mnc] [mcc]" << std::endl;
 	};
 	auto add = [&](int argc, char *argv[]) {
@@ -113,6 +139,27 @@ int main(int argc, char *argv[]) {
 		auto name_2 = argc > 6 ? std::string(argv[6]) : name_1;
 
 		onsTool.Add(mnc, mcc, name_1, name_2);
+		onsTool.Save();
+	};
+	auto edit = [&](int argc, char *argv[]) {
+		if (argc < 6) {
+			showUsage(argv[0]);
+			return;
+		}
+
+		OnsTool onsTool(argv[1]);
+		onsTool.Load();
+
+		auto mnc = static_cast<uint32_t>(std::stoi(argv[3]));
+		auto mcc = static_cast<uint32_t>(std::stoi(argv[4]));
+		auto name_1 = std::string(argv[5]);
+		auto name_2 = argc > 6 ? std::string(argv[6]) : name_1;
+
+		if (argc > 6) {
+			onsTool.Edit(mnc, mcc, name_1, name_2);
+		} else {
+			onsTool.Edit(mnc, mcc, name_1);
+		}
 		onsTool.Save();
 	};
 	auto list = [&](int argc, char *argv[]) {
@@ -144,6 +191,7 @@ int main(int argc, char *argv[]) {
 	std::string command = argv[2];
 	std::map<std::string, std::function<void(int argc, char *argv[])>> commands = {
 			{"add", add},
+			{"edit", edit},
 			{"list", list},
 			{"remove", remove},
 	};
