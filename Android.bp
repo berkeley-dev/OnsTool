@@ -1,0 +1,10 @@
+cc_binary {
+    name: "OnsTool",
+    host_supported: true,
+
+    srcs: [
+        "main.cpp",
+    ],
+    cflags: ["-W", "-Wall", "-Wextra", "-Werror", "-fexceptions"],
+    system_shared_libs: ["libc", "libdl"],
+}
