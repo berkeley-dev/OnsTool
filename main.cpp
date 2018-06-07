@@ -162,7 +162,7 @@ int main(int argc, char *argv[]) {
 		}
 		onsTool.Save();
 	};
-	auto list = [&](int argc, char *argv[]) {
+	auto list = [&](int, char *argv[]) {
 		OnsTool onsTool(argv[1]);
 		onsTool.Load();
 		onsTool.List();
