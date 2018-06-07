@@ -31,6 +31,8 @@ public:
 			}
 		} catch (std::bad_alloc &exception) {
 			throw std::invalid_argument("Unable to open " + mPath);
+		} catch (std::length_error &exception) {
+			throw std::invalid_argument("Unable to open " + mPath);
 		}
 	}
 
