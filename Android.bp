@@ -5,6 +5,6 @@ cc_binary {
     srcs: [
         "main.cpp",
     ],
-    cflags: ["-W", "-Wall", "-Wextra", "-Werror", "-fexceptions"],
+    cflags: ["-W", "-Wall", "-Wextra", "-Werror", "-Wpedantic", "-fexceptions"],
     system_shared_libs: ["libc", "libdl"],
 }
